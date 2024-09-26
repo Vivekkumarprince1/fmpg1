@@ -1,4 +1,3 @@
-
 //index.js
 var express = require('express');
 var router = express.Router();
@@ -34,26 +33,6 @@ router.get('/index', function(req, res, next) {
   res.render('index');
 });
 
-// router.get('/api/bookings', (req, res) => {
-//   res.json({ message: 'Bookings fetched successfully' });
-// });
-
-// router.get('/booking', isLoggedIn, async function(req, res, next) {
-//   const user =await userModel.findOne({
-//     username: req.session.passport.user
-//   })
-//   try {
-//     const rooms = await roomModel.find();
-//     // res.render('/', {rooms:rooms });
-//     console.log(rooms)
-//   } catch (err) {
-//     console.error('Error fetching room:', err);
-//     res.status(500).send('Error fetching room');
-//   }
-//   console.log("here is it", user);
-//   res.render('booking', { user });
-
-// });
 
 router.get('/booking', isLoggedIn, async function(req, res, next) {
   const user =await userModel.findOne({
@@ -84,7 +63,9 @@ router.get('/api/bookings', (req, res) => {
   });
 });
 
+
  
+
 router.get('/TermsAndConditions', function(req, res, next) {
   res.render('TermsAndConditions',{ page: 'TermsAndConditions', title: 'TermsAndConditions' });
 });
@@ -141,6 +122,8 @@ router.get('/team', function(req, res, next) {
   res.render('team',{ page: 'team', title: 'Team' });
 });
 
+
+
 router.get('/profile', isLoggedIn, async function(req, res, next) {
   try {
     const user = await userModel.findOne({ username: req.session.passport.user });
@@ -168,9 +151,26 @@ router.get('/profile', isLoggedIn, async function(req, res, next) {
   }
 });
 
+
 router.get('/dashboard', isLoggedIn, (req, res) => {
   res.render('admin/dashboard', { admin: req.user });
 });
+
+// router.post('/register', function(req, res) {
+//   const { username, email, mobile} = req.body;
+//   const userData = new userModel({ username, email, mobile });
+
+//   userModel.register(userData, req.body.password)
+//     .then(function(){
+//       passport.authenticate("local")(req, res, function() {
+//         res.redirect("/profile");
+//       })
+//     })
+//     .catch(function(err) {
+//       console.error(err);
+//       res.redirect("/login");
+//     });
+// });
 
 router.post('/login', function(req, res, next) {
   passport.authenticate('local', function(err, user, info) {
@@ -179,8 +179,10 @@ router.post('/login', function(req, res, next) {
       req.session.error = info ? info.message : 'Invalid username or password';
       return res.redirect('/login');
     }
+    
     req.logIn(user, function(err) {
       if (err) { return next(err); }
+      
       req.session.success = 'Successfully logged in!';
       return res.redirect('/'); // Redirect to the home page or user-specific page
     });
@@ -191,12 +193,13 @@ router.post('/login', function(req, res, next) {
 router.get('/login', function(req, res) {
   const errorMessages = req.session.error || [];
   const successMessages = req.session.success || [];
-  console.log(errorMessages);
-  console.log(successMessages);
 
   // Clear messages from the session
   req.session.error = null;
   req.session.success = null;
+
+  console.log("Error messages:", errorMessages);
+  console.log("Success messages:", successMessages);
   
   res.render('login', { error: errorMessages, success: successMessages });
 });
