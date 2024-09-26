@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FMPG</title>
+    <link rel="icon" href="img/logo.png" type="image/icon type">
+    <!-- <link rel="stylesheet" href="/stylesheets/style.css"> -->
+    <link rel="stylesheet" href="/css/profile.css">
+    <script>
+        function confirmAction(action, event) {
+          event.preventDefault(); // Prevent the form from submitting immediately
+          const confirmation = confirm(`Are you sure you want to ${action} this booking?`);
+          if (confirmation) {
+            event.target.submit(); // Submit the form if confirmed
+          }
+        }
+      </script>
+</head>
+
+<body>
+    <%- include('profile-nav') %>
+
+        <h6 class="m-b-20 m-t-40 p-b-5 b-b-default f-w-600">Booking</h6>
+        <div class="row">
+            <% if (bookings && bookings.length) { %>
+                <ol>
+                    <% bookings.forEach(function(booking) { %>
+                        <li class="booking-details">
+                            <p><strong>Booking ID:</strong>
+                                <%= booking._id %>
+                            </p>
+                            <% if (booking.room) { %>
+                                <% if (booking.room.property) { %>
+                                    <p><strong>Property Name:</strong>
+                                        <%= booking.room.property.name %>
+                                    </p>
+                                    <% } %>
+                                        <!-- <p><strong>property owner</strong><%= booking.propertyID.owner%></p> -->
+                                        <p><strong>Room Type:</strong>
+                                            <%= booking.room.type %>
+                                        </p>
+                                        <% } else { %>
+                                            <p><strong>Room Type:</strong> Not specified</p>
+                                            <% } %>
+                                                <p><strong>Start Date:</strong>
+                                                    <%= booking.startDate.toDateString() %>
+                                                </p>
+                                                <p><strong>End Date:</strong>
+                                                    <%= booking.endDate.toDateString() %>
+                                                </p>
+                                                <p><strong>Special Request:</strong>
+                                                    <%= booking.specialRequest || 'None' %>
+                                                </p>
+                                                <p><strong>Status</strong>
+                                                    <%= booking.status %>
+                                                </p>
+                        </li>
+                        <% }) %>
+                </ol>
+                <% } else { %>
+                    <div>No Bookings Available</div>
+                    <% } %>
+        </div>
+
+        <div id="dynamic-content">
+            
+            <!-- Dynamic content will be loaded here -->
+        </div>
+
+        </div>
+        <script>
+            function loadContent(url, contentId) {
+                fetch(url)
+                    .then(response => response.text())
+                    .then(data => {
+                        document.getElementById("dynamic-content").innerHTML = data;
+                    })
+                    .catch(error => console.error('Error loading content:', error));
+            }
+    
+            // Optionally load the default content when the page loads
+            // loadContent('/dashboard', 'profile');
+        </script>
+</body>
+
+</html>

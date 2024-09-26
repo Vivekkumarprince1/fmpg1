@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FMPG</title>
+    <link rel="icon" href="img/logo.png" type="image/icon type">
+    <link rel="stylesheet" type="text/css" href="../stylesheets/loginstyle.css">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:600&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a81368914c.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <img class="wave" src="../images/wave.png">
+    <div class="container">
+        <div class="img">
+            <img src="../images/bg.svg">
+        </div>
+        <div class="login-content">
+            <form action="/login" method="POST">
+                <img src="../images/avatar.svg">
+                <h2 class="title">Welcome</h2>
+
+                <!-- Success and error messages in EJS -->
+                <% if (error.length > 0) { %>
+                    <div class="alert alert-danger">
+                        <%= error %>
+                    </div>
+                <% } %>
+                
+                <!-- Display success message -->
+                <% if (success.length > 0) { %>
+                    <div class="alert alert-success">
+                        <%= success %>
+                    </div>
+                <% } %>                  
+                  
+
+                <div class="input-div one">
+                    <div class="i">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="div">
+                        <h5>Username</h5>
+                        <input type="text" class="input" id="login-username" name="username" required>
+                    </div>
+                </div>
+                <div class="input-div pass">
+                    <div class="i"> 
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <div class="div">
+                        <h5>Password</h5>
+                        <input type="password" class="input" id="login-password" name="password" required>
+                    </div>
+                </div>
+                <a href="/forgot" class="forgot">Forgot Password?</a>
+                <input type="submit" class="btn" value="Login">
+                <h4>Don't have an account?</h4><a href="/signup">Sign Up here</a>
+            </form>
+        </div>
+    </div>
+    <script type="text/javascript" src="../js/login.js"></script>
+</body>
+</html>
