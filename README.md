@@ -1,224 +1,286 @@
-# fmpg
-FMPG is a platform designed to help users find paying guest (PG) accommodations and hostels near various locations. The project is built using Node.js, Express, MongoDB, and EJS templates. It includes features such as user management, property and room management, and a booking system, along with an admin panel and property owner-specific functionalities.
+# FMPG (Find My PG) 🏠
 
-## Production Readiness Checklist
-- Use `.env` (see `.env.example`) and do not hardcode any secrets.
-- Set strong values for `SESSION_SECRET` and `JWT_SECRET`.
-- Configure email credentials (`EMAIL_USER`, `EMAIL_PASS`) for OTP and transactional emails.
-- Configure Razorpay keys via `RAZORPAY_KEY_ID` and `RAZORPAY_KEY_SECRET`.
-- Run behind HTTPS and set `NODE_ENV=production`.
-- Ensure MongoDB is reachable from production and has backups enabled.
+[![GitHub Repo](https://img.shields.io/badge/GitHub-Repository-blue?logo=github)](https://github.com/Vivekkumarprince1/fmpg1)
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-green.svg)](https://nodejs.org/)
+[![Platform](https://img.shields.io/badge/platform-Vercel%20%7C%20Serverless-black?logo=vercel)](https://vercel.com)
+[![License](https://img.shields.io/badge/license-ISC-orange.svg)](LICENSE)
 
-Table of Contents
-    Technologies Used
-    Project Structure
-    Installation and Setup
-    Features
-    User Management
-    Property Management
-    Booking System
-    Admin Panel
-    Owner Dashboard
-    Routes Overview
-    Schemas
-    Environment Variables
-    Technologies Used
-    Node.js
-    Express.js
-    MongoDB (Mongoose)
-    EJS (Embedded JavaScript templating)
-    Passport.js (User Authentication)
-    Nodemailer (Email functionality)
-    PDFKit (Invoice generation)
+**FMPG** is a modern, feature-rich web application designed to help users find and book paying guest (PG) accommodations, hostels, and rental rooms near various locations. Built on top of **Node.js, Express, MongoDB (Mongoose)**, and **EJS templates**, the platform integrates advanced administrative dashboards, owner portals, dynamic analytics, OTP-based security, Cloudinary asset storage, and Razorpay payment processing.
 
-Project Structure
-The project is structured into the following folders and files:
-    .
-    ├── routes
-    │   ├── adminroutes.js
-    │   ├── roomdb.js
-    │   ├── propertyroutes.js
-    │   ├── bookingroutes.js
-    │   ├── contactroutes.js
-    │   └── ownerroutes.js
-    ├── models
-    │   ├── Analysis.js
-    │   ├── Booking.js
-    │   ├── Contact.js
-    │   ├── Property.js
-    │   ├── Room.js
-    │   └── User.js
-    ├── views
-    │   ├── index.ejs
-    │   ├── addProperty.ejs
-    │   ├── admin/
-    │   └── ...
-    ├── public
-    │   ├── css/
-    │   ├── img/
-    │   └── js/
-    ├── app.js
-    ├── db.js
-    └── ...
+The project is fully optimized for serverless deployments on Vercel.
 
-Installation and Setup:
-1.Clone the repository:
-git clone https://github.com/your-repo-url/fmpg.git
-cd fmpg
-2.Install dependencies:
-npm install
-3.Create a MongoDB database and update the db.js file with your database credentials.
+---
 
-4.Environment variables: Create a .env file to store your sensitive information such as database URIs, email credentials, etc.
-PORT=3000
-DB_URL=your_mongoDB_url
-EMAIL_USER=your_email
-EMAIL_PASS=your_email_app_password
+## 🔗 Repository
+Official Repository Link: **[https://github.com/Vivekkumarprince1/fmpg1](https://github.com/Vivekkumarprince1/fmpg1)**
 
-5.Start the application:
+---
 
-6.Run the application:npm start
+## 🛠️ Tech Stack & Key Technologies
 
-Access the application: Visit http://localhost:3000 in your browser.
+- **Backend Framework**: [Express.js](https://expressjs.com/) (Node.js)
+- **Database**: [MongoDB](https://www.mongodb.com/) with [Mongoose ORM](https://mongoosejs.com/)
+- **Frontend / Templating**: [EJS](https://ejs.co/) (Embedded JavaScript) with custom CSS layouts
+- **Authentication**: Passport.js with session-based persistence and local strategies
+- **Asset Management**: Cloudinary API with Multer for secure image uploads and dynamic delivery
+- **Payment Gateway**: Razorpay Integration (via `razorpay` and custom checkout structures)
+- **Security & Optimization**:
+  - `helmet` for secure HTTP headers
+  - `compression` for Gzip response compression
+  - `express-rate-limit` for DDoS prevention (Global, Auth, and OTP rate limiters)
+  - CSRF/Origin validation on production environments
+- **Email & OTP**: Nodemailer for transactional emails (OTP recovery, booking verification, and PDF invoice dispatch)
+- **Document Generation**: PDFKit for automated booking invoice PDF generation
+- **Logging**: Winston logger for application logging and Morgan for request logs
 
-.Features
-User Management
-Signup and login with email and mobile verification.
-Users can reset their password using OTP sent to their email.
-Admins can view, add, edit, and delete users.
+---
 
-.Property Management
-Admins can add, edit, and delete properties.
-Properties include details like name, location, type, images, amenities, and associated rooms.
-Property owners can manage bookings for their own properties.
+## 📁 Project Directory Structure
 
-.Booking System
-Users can book rooms for a specific property.
-Admins can manage all bookings, including accepting and rejecting requests.
-Owners can confirm or cancel bookings for their properties, and users receive email confirmations with PDF invoices.
+```text
+fmpg1/
+├── api/
+│   └── index.js                    # Vercel serverless functions entrypoint
+├── config/
+│   ├── cloudinary.js               # Cloudinary CDN helper configurations
+│   ├── indian-cities.json          # List of cities for property search filtering
+│   ├── razorpay.js                 # Razorpay API client setup
+│   ├── staticAssetMap.json         # Static assets mapping
+│   └── users.js                    # User-related configurations
+├── middleware/
+│   ├── auth.js                     # Authentication & role protection (superadmin, admin, owner, user)
+│   ├── cloudinaryUpload.js         # Multer-Cloudinary file upload configurations
+│   └── flash.js                    # Flash message system helper
+├── models/
+│   ├── admin.js                    # Admin profile settings
+│   ├── Analysis.js                 # Booking & system traffic analytics schema
+│   ├── AuditLog.js                 # Admin/Owner action logger
+│   ├── Booking.js                  # Booking information schema
+│   ├── Contact.js                  # Contact message schema
+│   ├── old admin.js                # Legacy admin structure
+│   ├── Otp.js                      # OTP storage for verification & reset
+│   ├── owner.js                    # Property owner detailed profiles
+│   ├── Payment.js                  # Payment tracking & status records
+│   ├── Property.js                 # PG/Hostel properties schema
+│   ├── propertyAddress.js          # Sub-addresses for search filtering
+│   ├── Room.js                     # Rooms under properties schema
+│   └── users.js                    # Core user account schema (Passport-local integrated)
+├── mongodb/
+│   └── db.js                       # Mongoose database connection client
+├── public/                         # Static files (CSS, JS, images, icons)
+├── routes/
+│   ├── adminroutes.js              # Admin portal CRUD operations & user/booking control
+│   ├── analyticsRoutes.js          # Analytics aggregation and endpoints
+│   ├── authroutes.js               # Sign up, Login, Log out, OTP validation
+│   ├── bookingroutes.js            # Customer and API booking processes
+│   ├── contactroutes.js            # Message submission
+│   ├── foodroutes.js               # Food listing management (if any)
+│   ├── forgot.js                   # OTP verification & Password resetting
+│   ├── index.js                    # Main landing page, searches, policies, and details
+│   ├── ownerroutes.js              # Owner dashboard, booking management, invoices
+│   ├── payment.js                  # Razorpay checkout & webhook handlers
+│   ├── propertyroutes.js           # Property browsing and owner management
+│   ├── roomdb.js                   # Room details and settings
+│   └── settingsRautes.js           # Account profile & settings management
+├── scripts/
+│   └── migrateAssetsToCloudinary.js # Data migrations from local storage to Cloudinary
+├── utils/
+│   └── logger.js                   # Winston-based logging system
+├── views/                          # EJS templates (Pages, layouts, partials)
+├── app.js                          # Core Express server configuration
+├── vercel.json                     # Vercel serverless configurations
+└── package.json                    # Node dependencies and scripts
+```
 
-.Admin Panel
-Admins can manage users, properties, rooms, and bookings.
-Analytics are available for total bookings, property occupancy rates, and booking status summaries.
-.Owner Dashboard
-Property owners can view and manage bookings for properties they own.
-Owners can send invoices to users when confirming or canceling bookings.
+---
 
-.Routes Overview
-User Routes (/users): Manage users.
-Property Routes (/properties): Manage properties.
-Room Routes (/rooms): Manage rooms associated with properties.
-Booking Routes (/bookings): Handle bookings for properties and rooms.
-Admin Routes (/admin): Admin functionalities for user, property, room, and booking management.
-Owner Routes (/owner): Property owner-specific routes for managing bookings.
+## ⚡ Installation & Local Setup
 
-.Schemas
-User: Stores user details such as username, email, mobile, password, and role (user, admin, superadmin, or owner).
-Property: Stores property details including name, location, type, images, amenities, rooms, and owner.
-Room: Stores room details including property reference, number, type, price, and availability.
-Booking: Stores booking details like start and end dates, room type, special requests, and status (pending, confirmed, or canceled).
-Contact: Stores messages sent via the contact form.
+### Prerequisites
+- Node.js (v18.0.0 or higher recommended)
+- MongoDB running locally or a MongoDB Atlas URI
+- Cloudinary developer account (for image uploads)
+- Razorpay account (for payment handling)
 
-.Environment Variables
-Ensure you have the following environment variables set up:
+### Steps
 
-PORT: The port your server will run on.
-DB_URL: MongoDB connection string.
-EMAIL_USER: Your email address for sending notifications.
-EMAIL_PASS: App password or email credentials for sending emails
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/Vivekkumarprince1/fmpg1.git
+   cd fmpg1
+   ```
 
+2. **Install Dependencies**
+   ```bash
+   npm install
+   ```
 
-1. Admin Routes (adminroutes.js)
-GET /admin/users: View all users.
-POST /admin/users/add: Add a new user.
-POST /admin/users/edit/:id: Edit a user.
-POST /admin/users/delete/:id: Delete a user.
-GET /admin/properties: View all properties.
-POST /admin/properties/add: Add a new property.
-POST /admin/properties/edit/:id: Edit a property.
-POST /admin/properties/delete/:id: Delete a property.
-GET /admin/bookings: View all bookings.
-POST /admin/bookings/add: Add a booking.
-POST /admin/bookings/edit/:id: Edit a booking.
-POST /admin/bookings/delete/:id: Delete a booking.
+3. **Configure Environment Variables**
+   Create a `.env` file in the root directory by copying the example template:
+   ```bash
+   cp .env.example .env
+   ```
+   Fill in your actual credentials:
+   ```env
+   NODE_ENV=development
+   PORT=3000
+   MONGODB_URI=your_mongodb_connection_uri
+   SESSION_SECRET=a_strong_session_secret
+   JWT_SECRET=a_strong_jwt_secret
 
-2. Property Routes (propertyroutes.js)
-GET /properties: Fetch all properties.
-GET /properties/:id: Fetch a specific property by ID.
-POST /properties/add: Add a new property.
-PUT /properties/edit/:id: Update property details.
-DELETE /properties/delete/:id: Delete a property.
+   # Razorpay credentials
+   RAZORPAY_KEY_ID=your_razorpay_key_id
+   RAZORPAY_KEY_SECRET=your_razorpay_key_secret
 
-3. Room Routes (roomdb.js)
-GET /rooms: Fetch all rooms.
-GET /rooms/add: Display the form to add a room.
-POST /rooms/add: Create a new room.
-GET /rooms/edit/:id: Edit a specific room.
-POST /rooms/edit/:id: Update room details.
-DELETE /rooms/delete/:id: Delete a room.
-Booking Routes (bookingroutes.js)
-GET /bookings: Fetch all bookings.
-POST /bookings/add: Add a new booking.
-POST /bookings/edit/:id: Edit an existing booking.
-POST /bookings/delete/:id: Delete a booking.
-Owner Routes (ownerroutes.js)
-GET /owner: View bookings for properties owned by the logged-in owner.
-POST /bookings/:id/accept: Confirm a booking and send an invoice.
-POST /bookings/:id/decline: Decline a booking and send a cancellation notice.
-Contact Routes (contactroutes.js)
-POST /contact: Handle contact form submissions.
-GET /admin/messages: View all messages.
+   # Cloudinary credentials
+   CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+   CLOUDINARY_API_KEY=your_cloudinary_api_key
+   CLOUDINARY_API_SECRET=your_cloudinary_api_secret
 
-4. Schema Explanation
-User Schema (User.js): Manages user roles (user, admin, superadmin, owner), email, mobile, and password. Integrates OTP for password recovery.
-Property Schema (Property.js): Stores property details like name, location, images, amenities, and rooms.
-Room Schema (Room.js): Associates with a property and includes details such as room number, type, price, and availability.
-Booking Schema (Booking.js): Links users, rooms, and properties. Tracks booking status (pending, confirmed, canceled).
-Contact Schema (Contact.js): Stores messages sent through the contact form.
+   # Email service (OTP and Invoices)
+   EMAIL_SERVICE=gmail
+   EMAIL_USER=your_gmail_address
+   EMAIL_PASS=your_gmail_app_password
+   EMAIL_FROM=no-reply@fmpg.com
+   ```
 
-5. Middleware Functions
-isAuthenticated: Ensures that only authenticated users can access specific routes.
-ensureOwner: Ensures that only users with the "owner" role can access certain routes.
+4. **Run Database Migrations / Asset Uploads (Optional)**
+   If you have local assets that you want to migrate to Cloudinary:
+   ```bash
+   npm run migrate:cloudinary-assets
+   ```
 
-6. Email and OTP Functionality
-Nodemailer is used to send OTPs for password recovery and booking confirmations/cancellations.
-Password recovery: Users can request an OTP, which is emailed to them, allowing them to reset their password.
+5. **Start the Development Server**
+   To start the app using `nodemon` (auto-reloading):
+   ```bash
+   npm run dev
+   ```
+   Or run the server normally:
+   ```bash
+   npm start
+   ```
 
-7. Deployment Guide
-Hosting: Use platforms like Heroku, AWS, or DigitalOcean to host the Node.js application.
-MongoDB: Use MongoDB Atlas for database hosting.
-Environment Variables: Ensure all environment variables are properly set in your hosting platform.
+6. **Access the Web App**
+   Open your browser and navigate to: [http://localhost:3000](http://localhost:3000)
 
-## Deploy on Vercel (Serverless)
+---
 
-This project is now configured to run on Vercel serverless functions.
+## 💻 Routes & API Endpoint Reference
 
-### What was added
-- `api/index.js` as the Vercel function entrypoint
-- `vercel.json` route mapping all traffic to Express
-- `app.js` updated to avoid `app.listen()` in serverless runtime
+### Public / General Routes (`routes/index.js`, `routes/contactroutes.js`)
+* `GET /` - Main landing page (Location selector, hero search)
+* `GET /about` - About us details
+* `GET /service` - Services offered by FMPG
+* `GET /destination` - Destination view
+* `GET /referandearn` - Reference program details
+* `GET /FAQs` - Frequently asked questions
+* `GET /TermsAndConditions` & `GET /TermsofService` - Terms pages
+* `GET /privacypolicy` - Privacy statement
+* `POST /contact` - Submit inquiries via contact form
+* `GET /readmore` - Additional informational logs
 
-### Required environment variables in Vercel
-Set these in **Project Settings → Environment Variables**:
-- `NODE_ENV=production`
-- `MONGODB_URI` (MongoDB Atlas connection string)
-- `SESSION_SECRET`
-- `JWT_SECRET`
-- `EMAIL_USER`, `EMAIL_PASS` (if using OTP/email flows)
-- `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET` (if payment is enabled)
-- `ALLOWED_ORIGINS` (comma-separated origins, e.g. `https://your-app.vercel.app`)
+### Authentication & OTP (`routes/authroutes.js`, `routes/forgot.js`)
+* `GET /signup` / `POST /signup` - Account registration (Supports standard users and owner applications)
+* `GET /login` / `POST /login` - User sign-in
+* `GET /logout` - Terminates user sessions
+* `GET /verify-otp` / `POST /verify-otp` - Validates OTP token sent to email
+* `GET /forgot` / `POST /forgot` - Form to trigger OTP request for forgotten password recovery
 
-### Deploy steps
-1. Push code to GitHub.
-2. Import the repository in Vercel.
-3. Configure environment variables.
-4. Deploy.
+### Profile & Settings (`routes/settingsRautes.js`)
+* `GET /profile` - Renders customer/owner profile info
+* `GET /settings` / `POST /settings` - Modifies password, user settings, and profile info
 
-For local development, continue using `npm start` or `npm run dev`.
+### Properties & Rooms (`routes/propertyroutes.js`, `routes/roomdb.js`)
+* `GET /Property` - View all active properties with filters (Location, Sharing Type, Pricing, etc.)
+* `GET /Property/:id` - Detailed preview of a single property (showing room options, address details)
+* `POST /Property/add` - Inserts a new PG property (requires owner/admin role)
+* `PUT /Property/edit/:id` - Updates details of property
+* `DELETE /Property/delete/:id` - Deletes property record
+* `GET /Room` - List of rooms
+* `POST /Room/add` / `POST /Room/edit/:id` - Creates/edits rooms associated with a PG property
 
-8. Extending the Application
-To extend the FMPG platform:
+### Bookings & API Checkout (`routes/bookingroutes.js`, `routes/payment.js`)
+* `GET /api/bookings` - Retrieves customer's bookings
+* `POST /api/bookings/add` - Initiates room booking request
+* `POST /api/bookings/edit/:id` - Updates booking details
+* `POST /api/bookings/delete/:id` - Cancels or deletes booking records
 
-Add more user roles: Modify the User schema and adjust routes for new roles.
-Introduce new property features: Add more fields to the Property schema and corresponding views.
-Integrate payment gateways: Add a service like Stripe or PayPal to handle payments directly on the platform.
+### Admin Dashboard (`routes/adminroutes.js`, `routes/analyticsRoutes.js`)
+* `GET /admin` - Admin home panel
+* `GET /admin/users` - Manage registered users (Add/Edit/Delete)
+* `GET /admin/properties` - Manage all properties
+* `GET /admin/bookings` - Main view of all bookings (Accept/Reject/Pending states)
+* `GET /admin/newOwnerrequest` - Review and approve PG owners request list
+* `GET /admin/auditLogs` - History log of admin operations
+* `GET /admin/messages` - Contact forms submissions viewer
+* `GET /admin/analytics` - Financial & booking visual analysis charts (leveraging Chart.js)
+
+### Owner Portal (`routes/ownerroutes.js`)
+* `GET /owner` - Dashboard specific to logged-in owner's properties
+* `POST /owner/bookings/:id/accept` - Confirm booking (Generates and emails PDF invoice to customer)
+* `POST /owner/bookings/:id/decline` - Rejects booking and releases room availability
+
+---
+
+## 🗄️ Database Schema Structures (Mongoose Models)
+
+1. **User (`models/users.js`)**
+   - Credentials, contact info (email, mobile), profile roles: `user`, `admin`, `superadmin`, `owner`. Integrates Passport authentication plugins.
+2. **Property (`models/Property.js`)**
+   - Property name, description, category type, primary images, amenities list, reference to the owner profile, array of rooms.
+3. **Room (`models/Room.js`)**
+   - Room number, cost, sharing type, vacancy limit, active booking array, availability state.
+4. **Booking (`models/Booking.js`)**
+   - Refers to User, Room, and Property. Captures check-in/check-out dates, status (`pending`, `confirmed`, `canceled`), payment reference details, and billing name.
+5. **Otp (`models/Otp.js`)**
+   - Holds email matching OTP codes with an index expiry for clean database cleanup.
+6. **Payment (`models/Payment.js`)**
+   - References order ID, receipt number, paid amount, status, signature, and payment gateway references.
+7. **AuditLog (`models/AuditLog.js`)**
+   - Records administrative edits, timestamps, action kinds, and editor ID.
+8. **Analysis (`models/Analysis.js`)**
+   - Aggregates metrics of visits, requests, and occupancy.
+
+---
+
+## 🚀 Serverless Deployment on Vercel
+
+The application is fully configured for deployment as a Vercel Serverless Function via `vercel.json` and the serverless wrapper `api/index.js`.
+
+### Steps to Deploy
+
+1. **Push your code to your GitHub Repository**
+   ```bash
+   git add .
+   git commit -m "Configure README and prepare for Vercel deployment"
+   git push origin main
+   ```
+
+2. **Connect to Vercel**
+   - Import the repository in [Vercel Dashboard](https://vercel.com).
+   - Choose **Node.js** as the build template.
+
+3. **Configure Environment Variables**
+   Under **Project Settings → Environment Variables**, add the following keys:
+   - `NODE_ENV` = `production`
+   - `MONGODB_URI` = *Your MongoDB Atlas connection URI*
+   - `SESSION_SECRET` = *A strong random secret*
+   - `JWT_SECRET` = *A strong random secret*
+   - `EMAIL_SERVICE` = `gmail`
+   - `EMAIL_USER` = *Gmail account address*
+   - `EMAIL_PASS` = *App Password*
+   - `EMAIL_FROM` = *Gmail sender address*
+   - `RAZORPAY_KEY_ID` = *Razorpay public API key*
+   - `RAZORPAY_KEY_SECRET` = *Razorpay secret API key*
+   - `CLOUDINARY_CLOUD_NAME` = *Cloudinary cloud name*
+   - `CLOUDINARY_API_KEY` = *Cloudinary API key*
+   - `CLOUDINARY_API_SECRET` = *Cloudinary API secret*
+   - `ALLOWED_ORIGINS` = `https://your-domain.vercel.app` *(Optional: Comma-separated list of trusted origins)*
+
+4. **Deploy**
+   - Click **Deploy**. Vercel will build the serverless functions and serve your Express application.
+
+---
+
+## 📝 License
+This project is licensed under the **ISC License**.

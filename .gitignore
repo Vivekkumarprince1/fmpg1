@@ -2,3 +2,6 @@ node_modules
 a.jsona.json
 .env
 .vercel
+docs
+Agents.md
+CLAUDE.md

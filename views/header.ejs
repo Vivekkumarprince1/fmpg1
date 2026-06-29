@@ -4,12 +4,23 @@
   }
 %>
 <!-- Spinner Loader Start -->
-<div id="spinner" class="fixed inset-0 z-[99999] flex items-center justify-center bg-bg-body transition-all duration-500 opacity-100 visible">
-    <div class="relative flex items-center justify-center">
-        <!-- Inner glowing ring -->
-        <div class="h-16 w-16 animate-spin rounded-full border-4 border-solid border-primary border-t-transparent"></div>
-        <!-- Center core pulse -->
-        <div class="absolute h-6 w-6 animate-pulse rounded-full bg-secondary animate-ping"></div>
+<div id="spinner" class="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-bg-body transition-all duration-700 opacity-100 visible">
+    <div class="relative flex items-center justify-center h-24 w-24 mb-6">
+        <!-- Background pulse -->
+        <div class="absolute inset-0 rounded-full bg-primary opacity-20 animate-ping"></div>
+        <!-- Outer ring spinning -->
+        <div class="absolute inset-0 rounded-full border-[3px] border-transparent border-t-primary border-r-primary animate-[spin_1.5s_linear_infinite]"></div>
+        <!-- Inner ring spinning reverse -->
+        <div class="absolute inset-4 rounded-full border-[3px] border-transparent border-b-secondary border-l-secondary animate-[spin_1s_linear_infinite_reverse]"></div>
+        <!-- Core dot -->
+        <div class="h-6 w-6 rounded-full bg-gradient-to-tr from-primary to-secondary animate-pulse shadow-lg"></div>
+    </div>
+    <!-- Loading Text -->
+    <div class="flex items-center gap-1 font-heading text-primary tracking-[0.25em] text-sm font-semibold uppercase">
+        Loading
+        <span class="animate-[bounce_1.4s_infinite_0s]">.</span>
+        <span class="animate-[bounce_1.4s_infinite_0.2s]">.</span>
+        <span class="animate-[bounce_1.4s_infinite_0.4s]">.</span>
     </div>
 </div>
 <script>
@@ -18,12 +29,13 @@
             var spinner = document.getElementById('spinner');
             if (!spinner) return;
             spinner.classList.add('opacity-0', 'invisible');
+            spinner.classList.remove('opacity-100', 'visible');
             setTimeout(() => {
                 spinner.style.display = 'none';
-            }, 500);
+            }, 700);
         }
         window.addEventListener('load', hideSpinner);
-        setTimeout(hideSpinner, 1500); // reduced timeout for snappier experience
+        setTimeout(hideSpinner, 1200); // snappy fallback
     })();
 </script>
 <!-- Spinner Loader End -->
